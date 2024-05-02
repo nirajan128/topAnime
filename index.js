@@ -9,12 +9,12 @@ import dotenv from 'dotenv'
      dotenv.config()
      
     //Create a browser and new page.
-    const browser = await puppeteer.launch({headless:false});
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     await page.goto("https://myanimelist.net/topanime.php");
     
-    //waits for the tbody elemt to load
+    //waits for the tbody element to load
     await page.waitForSelector("tbody", { timeout: 60000 });
     
     //evaluates the webpage
@@ -34,13 +34,12 @@ import dotenv from 'dotenv'
    await browser.close();
 
    //insert into database
-   //connect db
+   //connect to the Render SQL database
    const db = new pg.Client({
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT,
+   connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized:false
+      }
    })
     
    await db.connect();
